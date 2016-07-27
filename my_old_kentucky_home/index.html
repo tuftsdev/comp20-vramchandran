@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>My Old Kentucky Home</title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+<h1 id="title">My Old Kentucky Home</h1>
+
+<video src="https://www.cs.tufts.edu/comp/20/my_old_kentucky_home.mp4" id="music_video" controls></video>
+<div id="lyrics"></div>
+
+<script>
+
+var vid = document.getElementById("music_video")
+var lyrics = document.getElementById("lyrics");
+
+vid.addEventListener("timeupdate", function() {
+	if (vid.currentTime < 4) {
+		lyrics.innerHTML = "<img src='beautiful-running-horse.jpg' height = 400 width = 600 />";
+	}
+	else if (4 < vid.currentTime && vid.currentTime < 8) {
+		lyrics.innerHTML = "<img src='house.jpg' height = 400 width = 600 />";
+	}
+	else if (8 < vid.currentTime && vid.currentTime < 14) {
+		lyrics.innerHTML = "<p>The sun shines bright in My Old Kentucky Home,</p>";
+	}
+	else if (15 < vid.currentTime && vid.currentTime < 22) {
+		lyrics.innerHTML = "<p>'Tis summer, the people are gay;</p>"
+	}
+	else if (22 < vid.currentTime && vid.currentTime < 28) {
+		lyrics.innerHTML = "<p>The corn-top's ripe and the meadow's in the bloom</p>"
+	}
+	else if (28 < vid.currentTime && vid.currentTime< 35) {
+		lyrics.innerHTML = "<p>While the birds make music all the day.</p>"
+	}
+	else if (35 < vid.currentTime && vid.currentTime <  42) {
+		lyrics.innerHTML = "<p>The young folks roll on the little cabin floor,</p>"
+	}
+	else if (42 < vid.currentTime && vid.currentTime < 49) {
+		lyrics.innerHTML = "<p>All merry, all happy and bright; </p>"
+	}
+	else if (49 < vid.currentTime && vid.currentTime < 55) {
+		lyrics.innerHTML = "<p>By 'n' by hard times comes a knocking at the door,</p>"
+	}
+	else if (55 < vid.currentTime && vid.currentTime < 63) {
+		lyrics.innerHTML = "<p>Then My Old Kentucky Home, good night! </p>"
+	}
+	else if (63 < vid.currentTime && vid.currentTime < 69) {
+		lyrics.innerHTML = "<p>Weep no more my lady</p>"
+	}
+	else if (69 < vid.currentTime && vid.currentTime < 75) {
+		lyrics.innerHTML = "<p>Oh weep no more today;</p>"
+	}
+	else if (75 < vid.currentTime && vid.currentTime < 80) {
+		lyrics.innerHTML = "<p>We will sing one song</p>"
+	}
+	else if (80 < vid.currentTime && vid.currentTime < 84) {
+		lyrics.innerHTML = "<p>For My Old Kentucky Home</p>"
+	}
+	else if (84 < vid.currentTime && vid.currentTime < 92) {
+		lyrics.innerHTML = "<p>For My Old Kentucky Home, far away</p>"
+	}
+	else if (vid.currentTime > 92) {
+		lyrics.innerHTML = " "
+		}
+}
+)
+</script>
+</body>
+</html>	
+

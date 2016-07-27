@@ -1,0 +1,17 @@
+/* This is the header */
+h1 {
+font-family: Georgia, "Times New Roman", serif;
+color: black;
+font-size: xx-large;
+text-align: center;
+font-style: oblique;
+}
+
+
+/* This is the font used for the lyrics*/
+p {
+font-family: Georgia, "Times New Roman", serif;
+color: black;
+font-size: large;
+}
+
