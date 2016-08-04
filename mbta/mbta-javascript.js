@@ -1,8 +1,7 @@
 	  var map;
-      var marker;
+    var marker;
 
-      function initMap() {
-    
+    function initMap() {
       var MBTAlocs = [
       	{name: "South Station", myLatLng: {lat: 42.352271, lng: -71.05524200000001}},
       	{name: "Andrew", myLatLng: {lat: 42.330154, lng: -71.057655}},
@@ -28,7 +27,7 @@
       	{name: "Braintree", myLatLng: {lat: 42.2078543, lng: -71.0011385}}    	
       	];
       	
-      	var alewifeAshmontLocs = [
+      var alewifeAshmontLocs = [
       		{lat: 42.395428, lng: -71.142483}, //Alewife
       		{lat: 42.39674, lng: -71.121815}, // Davis
       		{lat: 42.3884, lng: -71.11914899999999}, // Porter
@@ -96,19 +95,54 @@
 
  		alewifeAshmont.setMap(map);
  		JFKBrain.setMap(map);
-       	
-       	var infoWindow = new google.maps.InfoWindow({map: map});
-       	
-       	 if (navigator.geolocation) {
+
+
+    var infoWindow = new google.maps.InfoWindow({map: map});
+
+    if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(function(position) {
-            var pos = {
+          
+          var pos = {
               lat: position.coords.latitude,
               lng: position.coords.longitude
             };
 
-            infoWindow.setPosition(pos);
-            infoWindow.setContent('Location found.');
-            map.setCenter(pos);
+          infoWindow.setPosition(pos);
+          
+          var minDistance = distanceCalc(pos.lat, pos.lng, MBTAlocs[0].myLatLng.lat, MBTAlocs[0].myLatLng.lng);
+          var minStation = MBTAlocs[0].name;
+          var minLat = MBTAlocs[0].myLatLng.lat, minLng = MBTAlocs[0].myLatLng.lng;
+          var distance = [];
+
+          for (var i = 1; i < 22; i++) {
+            if (distanceCalc(pos.lat, pos.lng, MBTAlocs[i].myLatLng.lat, MBTAlocs[i].myLatLng.lng) < minDistance) {
+                     minDistance = distanceCalc(pos.lat, pos.lng, MBTAlocs[i].myLatLng.lat, MBTAlocs[i].myLatLng.lng);
+                     minStation = MBTAlocs[i].name;
+                     minLat = MBTAlocs[i].myLatLng.lat;
+                     minLng = MBTAlocs[i].myLatLng.lng;
+                  }
+            distance[i] = MBTAlocs[i].myLatLng;
+          }
+         
+
+        infoWindow.setContent(minStation);
+
+        var closeLineLocs = [{lat: pos.lat, lng: pos.lng} , {lat: minLat, lng: minLng}];
+
+        var closeLine = new google.maps.Polyline({
+       path: closeLineLocs,
+       geodesic: true,
+       strokeColor: '#66CD00',
+       strokeOpacity: 1.0,
+       strokeWeight: 2
+      });
+        closeLine.setMap(map);
+
+
+          // infoWindow.setContent(word);
+ 
+
+            // map.setCenter(pos);
           }, function() {
             handleLocationError(true, infoWindow, map.getCenter());
           });
@@ -116,9 +150,36 @@
           // Browser doesn't support Geolocation
           handleLocationError(false, infoWindow, map.getCenter());
         }
-       	
+
+
+        // console.log(word);
+
+
+
 }
 
+
+
+function distanceCalc(lat1, lon1, lat2, lon2) {
+
+var R = 6371; // km 
+//has a problem with the .toRad() method below.
+var x1 = lat2-lat1;
+var dLat = toRad(x1);  
+var x2 = lon2-lon1;
+var dLon = toRad(x2);  
+var a = Math.sin(dLat/2) * Math.sin(dLat/2) + 
+                Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * 
+                Math.sin(dLon/2) * Math.sin(dLon/2);  
+var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+var d = R * c; 
+    
+    return d;
+}
+
+function toRad(x) {
+   return x * Math.PI / 180;
+}
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
         infoWindow.setPosition(pos);
         infoWindow.setContent(browserHasGeolocation ?
