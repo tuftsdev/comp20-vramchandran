@@ -1,4 +1,6 @@
-In this lab, I parse the data string that has been entered and then I use a for loop to 
-run through the object that I created in order to set the div class equal to a different 
-part of the string and output the message.  I did this project by myself and it took me 
-roughly 3 hours (I didn't realize we could use the parse function).
+		In this lab, I used an XMLHTTPRequest in order to read in data from a page and 
+	then parse it and print it out.  I worked for a couple hours on this project, and
+	I did it alone.
+		As for the question, you cannot request the data from a different origin
+	while using XMLHttpRequest because of the Same-Origin Policy, which prevents scripts 
+	from a particular page to access data on another page.
