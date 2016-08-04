@@ -151,13 +151,24 @@
           handleLocationError(false, infoWindow, map.getCenter());
         }
 
-
-        // console.log(word);
-
-
+		request = new XMLHttpRequest();
+    	request.open("GET", "https://powerful-depths-66091.herokuapp.com/redline.json", true);
+    	request.onreadystatechange = callme()
+    	request.send(null);
 
 }
 
+
+
+function callme() {
+        result = "";
+        test = request.responseText;
+        theMessage = JSON.parse(test);
+        for (i = 0; i < theMessage.length; i++) {
+        		result += theMessage[i]
+        }
+        console.log(result)
+};
 
 
 function distanceCalc(lat1, lon1, lat2, lon2) {
