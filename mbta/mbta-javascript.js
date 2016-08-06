@@ -92,8 +92,8 @@
 						train_stop.push(predict[i][j]["Stop"]);
 						wait_time.push(predict[i][j]["Seconds"]);
 					}
-	//			}
-	//			
+				}
+				
 			}
 			
 			final_array.push(train_stop);
