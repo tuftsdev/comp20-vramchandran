@@ -1,6 +1,3 @@
-		In this lab, I used an XMLHTTPRequest in order to read in data from a page and 
-	then parse it and print it out.  I worked for a couple hours on this project, and
-	I did it alone.
-		As for the question, you cannot request the data from a different origin
-	while using XMLHttpRequest because of the Same-Origin Policy, which prevents scripts 
-	from a particular page to access data on another page.
+Everything has been implemented correctly. There is a GoogleMaps API implemented to display markers with corresponding info windows that display train times. There is also another marker that displays your location and the closest train station to you with a line connecting you to that train station.
+The GoogleAPI manual was a great help in implementing all these features, and I talked with a TA about how to complete this.
+This assignment probably took me around 15 hours to complete.

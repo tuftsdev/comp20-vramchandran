@@ -66,56 +66,65 @@
     		 scaledSize: new google.maps.Size(15, 15), // scaled size
 
         };
-        
+      var request = new XMLHttpRequest();
+      var stationInfowindow = [];
+             var final_array = [];
+      request.open("GET", "https://powerful-depths-66091.herokuapp.com/redline.json", true);
+      request.onreadystatechange = function(){
+
+       if (request.readyState == 4 && request.status == 200) {
+        var raw = request.responseText;
+        var content = JSON.parse(raw);
+        final_array = gather_data(content);
+        }
+       if (final_array[0] == undefined){
+        return;
+       }
+
+      names = [];
+
+      for (var i = 0; i < MBTAlocs.length; i++) {
+        names[i] = MBTAlocs[i].name
+      }
+
+      for (var i = 0; i < MBTAlocs.length; i++) {
+        stationInfowindow[i] = find_info(final_array, names[i])
+      }
+
+
+      var marker_array = [];
+
+
+      var markers = [];
+      var infowindows = [];
+
+      for (var i = 0; i < MBTAlocs.length; i++) {
+        markers[i] = new google.maps.Marker({
+              position: MBTAlocs[i].myLatLng, 
+              map: map, 
+              title: MBTAlocs[i].name,
+              icon: icon
+        });
+        marker_array.push(markers[i]);
+
+        markers[i].index = i;
+   
+        infowindows[i] = new google.maps.InfoWindow({
+            content: stationInfowindow[i],
+            maxWidth: 300
+        });
+
+        google.maps.event.addListener(markers[i], 'click', function() {
+            infowindows[this.index].open(map,markers[this.index]);
+        }); 
+    }
+
+    }    
+
+
        	
-       	var request = new XMLHttpRequest();
-		
-		request.open("GET", "https://powerful-depths-66091.herokuapp.com/redline.json", true);
-		request.onreadystatechange = function(){
-			final_array = []
-			if (request.readyState == 4 && request.status == 200) {
-				result = ""
-				var destination = []
-				var train_stop = []
-				var wait_time = []
-				var predict = []
-				raw = request.responseText;
-				var content = JSON.parse(raw);
-				var all_trips = content["TripList"]
-				var schedule = all_trips["Trips"]
-				for (i = 0; i < schedule.length; i++) {
-					destination.push(schedule[i]["Destination"]);
-					predict.push(schedule[i]["Predictions"]);		
-				}
-				for (i = 0; i < predict.length; j++) {
-					for (j = 0; j < predict[i].length; j++) {
-						train_stop.push(predict[i][j]["Stop"]);
-						wait_time.push(predict[i][j]["Seconds"]);
-					}
-				}
-				
-			}
-			
-			final_array.push(train_stop);
-			final_array.push(wait_time);
-			
-			var marker;
-			var stationInfowindow = new google.maps.InfoWindow();	
-			
-			for (var i =0; i < MBTAlocs.length; i++) {
-       	    	marker = new google.maps.Marker({
-       	    		position: MBTAlocs[i].myLatLng, 
-       	    		map: map, 
-       	    		title: MBTAlocs[i].name,
-       	    		icon: icon
-       	    	}); 	
-				google.maps.event.addListener(marker, 'click', function() {
- 					 stationInfowindow.open(map, marker);
-				});
-				marker.setMap(map);
-       		}
-		}
-		
+    
+
 		request.send();
        	   
   		var alewifeAshmont = new google.maps.Polyline({
@@ -154,6 +163,10 @@
           var minStation = MBTAlocs[0].name;
           var minLat = MBTAlocs[0].myLatLng.lat, minLng = MBTAlocs[0].myLatLng.lng;
           var distance = [];
+          var marker = new google.maps.Marker({
+               position: pos,
+               map: map
+            });
 
           for (var i = 1; i < 22; i++) {
             if (distanceCalc(pos.lat, pos.lng, MBTAlocs[i].myLatLng.lat, MBTAlocs[i].myLatLng.lng) < minDistance) {
@@ -168,6 +181,9 @@
 
         infoWindow.setContent(minStation);
 
+        google.maps.event.addListener(marker, 'click', function() {
+            infoWindow.open(map,marker);
+        }); 
         var closeLineLocs = [{lat: pos.lat, lng: pos.lng} , {lat: minLat, lng: minLng}];
 
         var closeLine = new google.maps.Polyline({
@@ -193,6 +209,51 @@
         }
 		
 }
+
+function find_info(final_array, train_stop_name) {
+	var indices = []
+	var result = ""
+	for (i = 0; i < final_array[0].length; i++) {
+		if (final_array[0][i] == train_stop_name) {
+			indices.push(i)
+		}
+	}
+	var min_time = final_array[1][indices[0]];
+	var final_index;
+	for (i = 0; i < indices.length; i++) {
+    if (final_array[1][indices[0]] > 0) {
+		  result += "A Red Line train with a final destination of " + final_array[2][indices[i]] + " will arrive at " + final_array[0][indices[i]] + " in " + final_array[1][indices[i]] + " seconds.  ";
+	 }
+  }
+	return result
+}
+
+function gather_data(content) {
+	final_array = []
+	var temp_destination = [];
+	var destination = [];
+	var train_stop = [];
+	var wait_time = [];
+	var predict = [];
+	var all_trips = content["TripList"]
+	var schedule = all_trips["Trips"]
+	for (i = 0; i < schedule.length; i++) {
+		temp_destination.push(schedule[i]["Destination"]);
+		predict.push(schedule[i]["Predictions"]);		
+	}
+	for (i = 0; i < predict.length; i++) {
+		for (j = 0; j < predict[i].length; j++) {
+			train_stop.push(predict[i][j]["Stop"]);
+			wait_time.push(predict[i][j]["Seconds"]);
+			destination.push(temp_destination[i])
+		}
+	}		
+	final_array.push(train_stop);
+	final_array.push(wait_time);
+	final_array.push(destination);
+	return final_array
+}
+
 
 function distanceCalc(lat1, lon1, lat2, lon2) {
 
