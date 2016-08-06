@@ -1,5 +1,5 @@
 	  var map;
-    var marker;
+
 
     function initMap() {
       var MBTAlocs = [
@@ -67,15 +67,56 @@
 
         };
         
-       	for (var i =0; i < MBTAlocs.length; i++) {
+       	
+       	var request = new XMLHttpRequest();
+		
+		request.open("GET", "https://powerful-depths-66091.herokuapp.com/redline.json", true);
+		request.onreadystatechange = function(){
+			final_array = []
+			if (request.readyState == 4 && request.status == 200) {
+				result = ""
+				var destination = []
+				var train_stop = []
+				var wait_time = []
+				var predict = []
+				raw = request.responseText;
+				var content = JSON.parse(raw);
+				var all_trips = content["TripList"]
+				var schedule = all_trips["Trips"]
+				for (i = 0; i < schedule.length; i++) {
+					destination.push(schedule[i]["Destination"]);
+					predict.push(schedule[i]["Predictions"]);		
+				}
+				for (i = 0; i < predict.length; j++) {
+					for (j = 0; j < predict[i].length; j++) {
+						train_stop.push(predict[i][j]["Stop"]);
+						wait_time.push(predict[i][j]["Seconds"]);
+					}
+	//			}
+	//			
+			}
+			
+			final_array.push(train_stop);
+			final_array.push(wait_time);
+			
+			var marker;
+			var stationInfowindow = new google.maps.InfoWindow();	
+			
+			for (var i =0; i < MBTAlocs.length; i++) {
        	    	marker = new google.maps.Marker({
        	    		position: MBTAlocs[i].myLatLng, 
        	    		map: map, 
        	    		title: MBTAlocs[i].name,
        	    		icon: icon
-       	    	});
-       	    	marker.setMap(map);
-       	}
+       	    	}); 	
+				google.maps.event.addListener(marker, 'click', function() {
+ 					 stationInfowindow.open(map, marker);
+				});
+				marker.setMap(map);
+       		}
+		}
+		
+		request.send();
        	   
   		var alewifeAshmont = new google.maps.Polyline({
    		 path: alewifeAshmontLocs,
@@ -150,26 +191,8 @@
           // Browser doesn't support Geolocation
           handleLocationError(false, infoWindow, map.getCenter());
         }
-
-		request = new XMLHttpRequest();
-    	request.open("GET", "https://powerful-depths-66091.herokuapp.com/redline.json", true);
-    	request.onreadystatechange = callme()
-    	request.send(null);
-
+		
 }
-
-
-
-function callme() {
-        result = "";
-        test = request.responseText;
-        theMessage = JSON.parse(test);
-        for (i = 0; i < theMessage.length; i++) {
-        		result += theMessage[i]
-        }
-        console.log(result)
-};
-
 
 function distanceCalc(lat1, lon1, lat2, lon2) {
 
