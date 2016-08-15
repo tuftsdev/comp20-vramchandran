@@ -69,7 +69,7 @@
       var request = new XMLHttpRequest();
       var stationInfowindow = [];
              var final_array = [];
-      request.open("GET", "https://powerful-depths-66091.herokuapp.com/redline.json", true);
+      request.open("GET", "https://hidden-wildwood-24761.herokuapp.com/redline.json", true);
       request.onreadystatechange = function(){
 
        if (request.readyState == 4 && request.status == 200) {
