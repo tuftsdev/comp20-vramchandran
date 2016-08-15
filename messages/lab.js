@@ -1,3 +1,4 @@
+/*
 var request = new XMLHttpRequest();
 
 function parse() {
@@ -15,3 +16,6 @@ function callme () {
     		document.getElementById("messages").innerHTML += string[1].username + '<br/>'	
 }	
 }
+*/
+str = '{"Person":"Carmen Sandiego","LastSeen":"Sealand"}';
+obj = JSON.parse(str);
