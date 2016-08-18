@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang = "en">
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+        <link rel ="stylesheet" href="style.css" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    </head>
+
+<body>
+<h1> Vivek's Security Assessment </h1>
+<p>by Vivek Ramchandran <p>
+
+<h2> Introduction </h2>
+<div class ="body_paragraph"> 
+This lab is asking us to test the security of a server given to us.  The server is created to let you know the locations of all other users that have checked in when you check in.  That is, it takes in a user location through the /sendLocation POST route, and then will output the locations of the other users that have already checked in.  It is my job to find the places in the server that are vulnerable and to find solutions to the issues I find.
+</div>
+
+<h2> Methodology </h2>
+<div class ="body_paragraph"> 
+The first thing that I did was the "black-box" testing, or entering a bunch of rubbish into the web app and using curl.  Next, I searched through the code for other places of vulnerability.
+</div>
+
+<h2> Abstract of Findings </h2>
+<div class ="body_paragraph"> 
+I found three vulnerabilities in Bernstein's server.  The first two, which are cross-site scripting and Injection, both stem from a user adding faulty input into the page.  The other vulnerability found, a Distributed Denial of Service, happens because of a lack of limitation of the amount of data that a single user can send to the server.  It is possible for a user to send data roughly a million times and crash the server.  This server has a general lack of privacy of the data passed into it, and makes it so that an outside user can both access and modify the data on the website.
+</div>
+
+<h3> Cross Site Scripting, or XSS </h3>
+<ul>
+	<li><p>Cross Site Scripting, or XSS is one of the most common vulnerabilities.  Anytime a server receives user input with HTML data, the user could send some Javascript, which could create some bad results. The damage can range to simply annoying scripts (such as the ones I posted) to serious hacks that could potentially steal information about other users. </p></li>
+	<li><p>This error was found in the /sendLocation post route </p></li>
+	<li><p>The severity of the issue is very high.  This website is all about user input, and an issue such as this could make it so that a single individual could ruin the server for everyone else, as well as attempt to hijack information from everyone else. </p></li>
+	<li><p>This error was found using curl.  A picture is attached: <img src ="XSS_Terminal.png" > </p></li>
+	<li><p>  A picture of the webpage is attached: <img src ="XSS_Result.png" > </p></li>
+	<li><p> This vulnerability can be fixed a number of different ways.  One method is called whitespace - what is essentially done is the user input is parsed, and special characters are replaced with an empty string.  This makes it so that input will basically not register. </p></li>
+	
+</ul>  
+
+<h3> Injection </h3>
+<ul>
+	<li><p>Injection of HTML is another security issue.  A user can submit HTML content through a query, allowing them to add content to the page. </p></li>
+	<li><p>This issue can be found in the /sendLocation POST route.</li></p>
+	<li><p>The severity of the issue is medium.  Injections are annoying, and can change things such as the style of the page, but unless the user foolishly inputs personal data into the page, Injections are more irritating than anything.</p></li>
+	<li><p>This issue was found by entering a query in the url: http://localhost:3000/checkins.json?login=mchow </p></li>
+	<li><p>Here is a screenshot of the output of the page. <img src ="Injection_Result.png" > </p></li>
+	<li><p>A possible defense to this vulnerability is through input sanitisation. This can be done a number of different ways, but a great way is to escape special HTML characters such as tags (<,>) so that the browser does not and cannot render them, and thus does not properly read in the input.</p></li>
+</ul>
+
+<h3> Distributed Denial of Service </h3>
+<ul>
+	<li><p>A distributed denial of service, or a DDOS, happens because there is no part in this script that checks how many check ins a particular user has made.  If they end up posting a million times, and then you try and GET the data, the result could be a system crash because of the ridiculous amount of checkins made.</p></li>
+	<li><p>This issue can be found in the /sendLocation POST route.</p></li>
+	<li><p>The severity of this issue is very high.  A DDOS attack can crash an entire system, making it so that no users are able to access the server.</p></li>
+	<li><p>This issue resides in the following code.  It is possible to check in as many times as possible. and that could lead to a DDOS. <img src ="DDOS_Code.png"> </p></li>
+	<li><p>While talking about proof of vulnerability, I do not currently have an example of it, as I have no desire to send a bunch of data to try to crash the system.  However, it is very possible, and could be done by a simple program that continually checks in until the server crashes.</p></li>
+	<li><p>The best defense to this vulnerability is to create some type of code that prevents the user from entering data after a certain number of posts.</p></li>
+
+</ul>
+<h2> Conclusion </h2>
+<div class ="body_paragraph"> 
+There were multiple issues found with the server that could easily destroy the usability of the website and potentially cost the users some information.  Fortunately, all three of the issues that I found could be easily fixed.  Also, this particular app does not contain any private information that is stored in the database.  Everything considered, the fixes for these issues are relatively easy, so therefore the cost to secure this server would be very low.
+</div>
+
+</body>
+</html>
